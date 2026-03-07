@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::title}, ~{::main})">
+<head>
+    <title>Home - Student Portal</title>
+</head>
+<body>
+<main>
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome to Student Portal</h1>
+            <p class="col-md-8 fs-4">A comprehensive platform to manage student information efficiently. View, add, edit, and delete student records with ease.</p>
+            <a class="btn btn-primary btn-lg" th:href="@{/students}" role="button">
+                <i class="bi bi-people-fill me-2"></i>View Students
+            </a>
+            <a class="btn btn-success btn-lg ms-2" th:href="@{/students/new}" role="button">
+                <i class="bi bi-person-plus-fill me-2"></i>Add New Student
+            </a>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill" style="font-size: 3rem; color: #0d6efd;"></i>
+                    <h5 class="card-title mt-3">Total Students</h5>
+                    <p class="card-text display-6" th:text="${students.size()}">0</p>
+                    <a th:href="@{/students}" class="btn btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-plus-fill" style="font-size: 3rem; color: #198754;"></i>
+                    <h5 class="card-title mt-3">Quick Actions</h5>
+                    <a th:href="@{/students/new}" class="btn btn-success mt-3">Add New Student</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">
+                        <i class="bi bi-clock-history me-2"></i>Recent Students
+                    </h5>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="student, stat : ${students}"
+                            th:if="${stat.index < 3}">
+                            <span th:text="${student.name}">Student Name</span>
+                            <a th:href="@{/students/{id}(id=${student.id})}" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

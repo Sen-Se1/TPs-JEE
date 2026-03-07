@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        .empty-message {
+            font-style: italic;
+            color: #777;
+            text-align: center;
+            padding: 40px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .stats {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: center;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Student List</h1>
+
+    <div class="stats" th:if="${!students.empty}">
+        <strong>Total Students:</strong> <span th:text="${students.size()}">0</span>
+    </div>
+
+    <div>
+        <a th:href="@{/students/register}" class="btn">Register New Student</a>
+        <a th:href="@{/}" class="btn btn-secondary">Back to Home</a>
+    </div>
+
+    <div th:if="${students.empty}" class="empty-message">
+        <p>No students registered yet. Click "Register New Student" to add one!</p>
+    </div>
+
+    <table th:unless="${students.empty}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Major</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, iterStat : ${students}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${student.name}">John Doe</td>
+            <td th:text="${student.email}">john@example.com</td>
+            <td th:text="${student.major}">Computer Science</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

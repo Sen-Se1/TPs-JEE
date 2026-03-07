@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout(~{::title}, ~{::main})">
+<head>
+    <title>Error - Student Portal</title>
+</head>
+<body>
+<main>
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 5rem;"></i>
+        </div>
+        <h1 class="display-1">Oops!</h1>
+        <p class="lead">Something went wrong.</p>
+        <div class="alert alert-danger mt-4" th:if="${errorMessage}" th:text="${errorMessage}">
+            Error message goes here
+        </div>
+        <div class="mt-5">
+            <a th:href="@{/}" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-house-door-fill me-2"></i>Go Home
+            </a>
+            <a th:href="@{/students}" class="btn btn-secondary btn-lg">
+                <i class="bi bi-people-fill me-2"></i>View Students
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
