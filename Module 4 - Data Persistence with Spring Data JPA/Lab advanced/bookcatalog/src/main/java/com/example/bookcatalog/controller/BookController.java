@@ -2,6 +2,7 @@ package com.example.bookcatalog.controller;
 
 import com.example.bookcatalog.model.Book;
 import com.example.bookcatalog.service.BookService;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/books")
@@ -25,10 +25,12 @@ import java.util.Map;
 public class BookController {
 
     private final BookService bookService;
+    private final MeterRegistry meterRegistry;
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, MeterRegistry meterRegistry) {
         this.bookService = bookService;
+        this.meterRegistry = meterRegistry;
     }
 
     @Operation(summary = "Get all books", description = "Returns a list of all books in the catalog")
@@ -39,6 +41,7 @@ public class BookController {
     })
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
+        meterRegistry.counter("api.requests", "endpoint", "getAllBooks").increment();
         List<Book> books = bookService.findAllBooks();
         return ResponseEntity.ok(books);
     }
@@ -55,6 +58,7 @@ public class BookController {
             @Parameter(description = "Sort field") @RequestParam(defaultValue = "id") String sort,
             @Parameter(description = "Sort direction") @RequestParam(defaultValue = "asc") String direction) {
 
+        meterRegistry.counter("api.requests", "endpoint", "getPaginatedBooks").increment();
         Page<Book> books = bookService.findBooksPaginated(page, size, sort, direction);
         return ResponseEntity.ok(books);
     }
@@ -70,6 +74,7 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(
             @Parameter(description = "ID of the book to be retrieved") @PathVariable Long id) {
+        meterRegistry.counter("api.requests", "endpoint", "getBookById").increment();
         Book book = bookService.findBookById(id);
         return ResponseEntity.ok(book);
     }
@@ -85,6 +90,7 @@ public class BookController {
     @GetMapping("/isbn/{isbn}")
     public ResponseEntity<Book> getBookByIsbn(
             @Parameter(description = "ISBN of the book to be retrieved") @PathVariable String isbn) {
+        meterRegistry.counter("api.requests", "endpoint", "getBookByIsbn").increment();
         Book book = bookService.findBookByIsbn(isbn);
         return ResponseEntity.ok(book);
     }
@@ -98,6 +104,7 @@ public class BookController {
     @GetMapping("/search")
     public ResponseEntity<List<Book>> searchBooks(
             @Parameter(description = "Search keyword") @RequestParam String keyword) {
+        meterRegistry.counter("api.requests", "endpoint", "searchBooks").increment();
         List<Book> books = bookService.searchBooks(keyword);
         return ResponseEntity.ok(books);
     }
@@ -111,6 +118,7 @@ public class BookController {
     @GetMapping("/year/{year}")
     public ResponseEntity<List<Book>> getBooksByYear(
             @Parameter(description = "Publication year") @PathVariable int year) {
+        meterRegistry.counter("api.requests", "endpoint", "getBooksByYear").increment();
         List<Book> books = bookService.findBooksByYear(year);
         return ResponseEntity.ok(books);
     }
@@ -126,13 +134,14 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Book> createBook(
             @Parameter(description = "Book object to be added") @Valid @RequestBody Book book) {
+        meterRegistry.counter("api.requests", "endpoint", "createBook").increment();
         Book createdBook = bookService.createBook(book);
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a book", description = "Updates an existing book in the catalog")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book successfully updated",
+            @ApiResponse(responseCode = "200", description = "Successfully updated book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Book.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid input",
@@ -144,6 +153,7 @@ public class BookController {
     public ResponseEntity<Book> updateBook(
             @Parameter(description = "ID of the book to be updated") @PathVariable Long id,
             @Parameter(description = "Updated book object") @Valid @RequestBody Book book) {
+        meterRegistry.counter("api.requests", "endpoint", "updateBook").increment();
         Book updatedBook = bookService.updateBook(id, book);
         return ResponseEntity.ok(updatedBook);
     }
@@ -158,6 +168,7 @@ public class BookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(
             @Parameter(description = "ID of the book to be deleted") @PathVariable Long id) {
+        meterRegistry.counter("api.requests", "endpoint", "deleteBook").increment();
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
